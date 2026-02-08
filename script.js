@@ -213,4 +213,151 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // ===================== TRUCK HAUL ANIMATION =====================
+    var haulBtn = document.getElementById('haulBtn');
+    var haulTruck = document.getElementById('haulTruck');
+    var reviewsGrid = document.getElementById('reviewsGrid');
+
+    if (haulBtn && haulTruck && reviewsGrid) {
+
+        var reviewSets = [
+            [
+                {
+                    text: '"Called Beaton in the morning and they were at my house by noon. Cleared out my entire garage in under two hours. Couldn\'t believe how fast and affordable it was!"',
+                    name: 'Maria G.',
+                    location: 'San Antonio, TX',
+                    initial: 'M'
+                },
+                {
+                    text: '"Professional, on time, and the price was exactly what they quoted. They even swept up after themselves. Highly recommend Beaton Junk Removal to anyone!"',
+                    name: 'James T.',
+                    location: 'San Antonio, TX',
+                    initial: 'J'
+                },
+                {
+                    text: '"Had a ton of construction debris from a kitchen remodel. These guys handled everything \u2014 drywall, old cabinets, tile, the works. Great crew, great price."',
+                    name: 'Robert L.',
+                    location: 'San Antonio, TX',
+                    initial: 'R'
+                }
+            ],
+            [
+                {
+                    text: '"Moved my elderly mother out of her house and Beaton took care of everything we couldn\'t keep. They were so respectful and careful. Absolute lifesavers."',
+                    name: 'Sandra K.',
+                    location: 'Schertz, TX',
+                    initial: 'S'
+                },
+                {
+                    text: '"I\'ve used Beaton three times now for different rental properties. Always on time, always fair pricing, always leave the place spotless. My go-to crew!"',
+                    name: 'David M.',
+                    location: 'New Braunfels, TX',
+                    initial: 'D'
+                },
+                {
+                    text: '"They hauled away an old hot tub, a broken trampoline, and a shed full of junk in one trip. I thought it would take multiple loads. These guys are beasts!"',
+                    name: 'Angela R.',
+                    location: 'Converse, TX',
+                    initial: 'A'
+                }
+            ],
+            [
+                {
+                    text: '"Best price I found after calling five different companies. And they were the fastest to respond. Showed up two hours after I called. Incredible service."',
+                    name: 'Chris P.',
+                    location: 'Live Oak, TX',
+                    initial: 'C'
+                },
+                {
+                    text: '"Our office renovation left a mountain of debris. Beaton cleared it all out over a weekend so we were ready for Monday. Professional and efficient!"',
+                    name: 'Lisa W.',
+                    location: 'San Antonio, TX',
+                    initial: 'L'
+                },
+                {
+                    text: '"I love that they recycle and donate what they can. It made me feel good knowing my old furniture was going to families in need instead of a landfill."',
+                    name: 'Marcus J.',
+                    location: 'Selma, TX',
+                    initial: 'M'
+                }
+            ]
+        ];
+
+        var currentReviewSet = 0;
+        var isAnimating = false;
+
+        function buildStars() {
+            return '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>';
+        }
+
+        function buildCard(review) {
+            return '<div class="review-stars">' + buildStars() + '</div>' +
+                '<p class="review-text">' + review.text + '</p>' +
+                '<div class="review-author">' +
+                    '<div class="review-avatar">' + review.initial + '</div>' +
+                    '<div class="review-info">' +
+                        '<strong>' + review.name + '</strong>' +
+                        '<span>' + review.location + '</span>' +
+                    '</div>' +
+                '</div>';
+        }
+
+        haulBtn.addEventListener('click', function () {
+            if (isAnimating) return;
+            isAnimating = true;
+            haulBtn.disabled = true;
+
+            var cards = reviewsGrid.querySelectorAll('.review-card');
+
+            // Start the truck driving
+            haulTruck.classList.add('driving');
+
+            // Haul each card as truck reaches it (staggered)
+            cards.forEach(function (card, i) {
+                setTimeout(function () {
+                    card.classList.add('hauling');
+                }, 600 + (i * 350));
+            });
+
+            // After truck exits, swap in new reviews
+            setTimeout(function () {
+                // Reset truck
+                haulTruck.classList.remove('driving');
+
+                // Move to next review set
+                currentReviewSet = (currentReviewSet + 1) % reviewSets.length;
+                var newReviews = reviewSets[currentReviewSet];
+
+                // Clear grid and insert new cards (hidden initially)
+                reviewsGrid.innerHTML = '';
+                newReviews.forEach(function (review, i) {
+                    var card = document.createElement('div');
+                    card.className = 'review-card';
+                    card.style.opacity = '0';
+                    card.innerHTML = buildCard(review);
+                    reviewsGrid.appendChild(card);
+                });
+
+                // Stagger the new cards entering
+                var newCards = reviewsGrid.querySelectorAll('.review-card');
+                newCards.forEach(function (card, i) {
+                    setTimeout(function () {
+                        card.classList.add('entering');
+                    }, 200 + (i * 200));
+                });
+
+                // Re-enable button after enter animation completes
+                setTimeout(function () {
+                    newCards.forEach(function (card) {
+                        card.classList.remove('entering');
+                        card.style.opacity = '1';
+                    });
+                    isAnimating = false;
+                    haulBtn.disabled = false;
+                }, 1000);
+
+            }, 3400);
+        });
+    }
+
 });
