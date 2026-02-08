@@ -260,6 +260,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 55px;
     width: auto;
     object-fit: contain;
+    border-radius: 12px;
 }
 
 .nav-links {
@@ -1486,6 +1487,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 60px;
     width: auto;
     object-fit: contain;
+    border-radius: 12px;
 }
 
 .footer-tagline {
