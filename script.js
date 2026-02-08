@@ -213,12 +213,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ===================== TRUCK HAUL ANIMATION =====================
-    var haulBtn = document.getElementById('haulBtn');
+    // ===================== TRUCK HAUL ANIMATION (AUTO) =====================
     var haulTruck = document.getElementById('haulTruck');
     var reviewsGrid = document.getElementById('reviewsGrid');
+    var reviewsSection = document.getElementById('reviews');
 
-    if (haulBtn && haulTruck && reviewsGrid) {
+    if (haulTruck && reviewsGrid && reviewsSection) {
 
         var reviewSets = [
             [
@@ -285,6 +285,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var currentReviewSet = 0;
         var isAnimating = false;
+        var haulInterval = null;
+        var sectionVisible = false;
 
         function buildStars() {
             return '<i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>';
@@ -302,17 +304,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 '</div>';
         }
 
-        haulBtn.addEventListener('click', function () {
-            if (isAnimating) return;
+        function runHaulAnimation() {
+            if (isAnimating || !sectionVisible) return;
             isAnimating = true;
-            haulBtn.disabled = true;
 
             var cards = reviewsGrid.querySelectorAll('.review-card');
 
             // Start the truck driving
             haulTruck.classList.add('driving');
 
-            // Haul each card as truck reaches it (staggered)
+            // Haul each card as truck reaches it
             cards.forEach(function (card, i) {
                 setTimeout(function () {
                     card.classList.add('hauling');
@@ -321,16 +322,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // After truck exits, swap in new reviews
             setTimeout(function () {
-                // Reset truck
                 haulTruck.classList.remove('driving');
 
-                // Move to next review set
                 currentReviewSet = (currentReviewSet + 1) % reviewSets.length;
                 var newReviews = reviewSets[currentReviewSet];
 
-                // Clear grid and insert new cards (hidden initially)
                 reviewsGrid.innerHTML = '';
-                newReviews.forEach(function (review, i) {
+                newReviews.forEach(function (review) {
                     var card = document.createElement('div');
                     card.className = 'review-card';
                     card.style.opacity = '0';
@@ -338,7 +336,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     reviewsGrid.appendChild(card);
                 });
 
-                // Stagger the new cards entering
                 var newCards = reviewsGrid.querySelectorAll('.review-card');
                 newCards.forEach(function (card, i) {
                     setTimeout(function () {
@@ -346,18 +343,43 @@ document.addEventListener('DOMContentLoaded', function () {
                     }, 200 + (i * 200));
                 });
 
-                // Re-enable button after enter animation completes
                 setTimeout(function () {
                     newCards.forEach(function (card) {
                         card.classList.remove('entering');
                         card.style.opacity = '1';
                     });
                     isAnimating = false;
-                    haulBtn.disabled = false;
                 }, 1000);
 
             }, 3400);
-        });
+        }
+
+        // Auto-trigger: start 1.5s after section is visible, repeat every 8s
+        var reviewObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    sectionVisible = true;
+                    if (!haulInterval) {
+                        // First run after 1.5s delay
+                        setTimeout(function () {
+                            runHaulAnimation();
+                        }, 1500);
+                        // Then repeat every 8 seconds
+                        haulInterval = setInterval(function () {
+                            runHaulAnimation();
+                        }, 8000);
+                    }
+                } else {
+                    sectionVisible = false;
+                    if (haulInterval) {
+                        clearInterval(haulInterval);
+                        haulInterval = null;
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
+
+        reviewObserver.observe(reviewsSection);
     }
 
 });
