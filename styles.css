@@ -1114,6 +1114,24 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
 }
 
+/* ============ PAGE HEADER (sub-pages) ============ */
+.page-header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-blue-light) 100%);
+    padding: 140px 0 60px;
+    text-align: center;
+}
+
+.page-title {
+    font-size: 2.8rem;
+    color: var(--white);
+    margin-bottom: 12px;
+}
+
+.page-subtitle {
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.75);
+}
+
 /* ============ FAQ ============ */
 .faq {
     padding: var(--section-padding);
@@ -1181,6 +1199,36 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-secondary);
     font-size: 0.95rem;
     line-height: 1.7;
+}
+
+.faq-cta {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 40px;
+    border-top: 1px solid var(--light-gray);
+}
+
+.faq-cta p {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.faq-cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.nav-links a.active {
+    color: var(--accent-gold);
+}
+
+.nav-links a.active::after {
+    width: 100%;
 }
 
 /* ============ CONTACT SECTION ============ */
