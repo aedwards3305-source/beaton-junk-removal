@@ -1238,18 +1238,65 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-/* Card entering animation */
-.review-card.entering {
-    animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+/* Delivery truck (right to left, flipped) */
+.haul-truck.delivering {
+    opacity: 1;
+    transform: scaleX(-1);
+    animation: truckDeliver 3.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
-@keyframes cardEnter {
+.haul-truck.delivering .truck-body {
+    animation: truckBounce 0.25s ease-in-out infinite;
+}
+
+.haul-truck.delivering .truck-wheel {
+    animation: wheelSpin 0.3s linear infinite;
+}
+
+.haul-truck.delivering .truck-exhaust span {
+    animation: puff 0.8s ease-out infinite;
+}
+
+.haul-truck.delivering .truck-exhaust span:nth-child(2) {
+    animation-delay: 0.25s;
+}
+
+.haul-truck.delivering .truck-exhaust span:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+@keyframes truckDeliver {
     0% {
-        transform: translateY(60px) scale(0.8);
-        opacity: 0;
+        left: calc(100% + 200px);
+    }
+    10% {
+        left: calc(100% + 200px);
     }
     100% {
-        transform: translateY(0) scale(1);
+        left: -200px;
+    }
+}
+
+/* Card dropped off by delivery truck */
+.review-card.dropping {
+    animation: cardDrop 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cardDrop {
+    0% {
+        transform: translateY(-80px) rotate(5deg) scale(0.4);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(10px) rotate(-1deg) scale(1.02);
+        opacity: 0.9;
+    }
+    75% {
+        transform: translateY(-4px) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0) rotate(0deg) scale(1);
         opacity: 1;
     }
 }

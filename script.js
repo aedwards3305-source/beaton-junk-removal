@@ -320,13 +320,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 }, 600 + (i * 350));
             });
 
-            // After truck exits, swap in new reviews
+            // After haul truck exits, bring delivery truck from the right
             setTimeout(function () {
                 haulTruck.classList.remove('driving');
 
                 currentReviewSet = (currentReviewSet + 1) % reviewSets.length;
                 var newReviews = reviewSets[currentReviewSet];
 
+                // Insert new cards (hidden)
                 reviewsGrid.innerHTML = '';
                 newReviews.forEach(function (review) {
                     var card = document.createElement('div');
@@ -336,20 +337,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     reviewsGrid.appendChild(card);
                 });
 
+                // Start delivery truck (right to left)
+                haulTruck.classList.add('delivering');
+
+                // Drop each card as the delivery truck passes (right to left = last card first)
                 var newCards = reviewsGrid.querySelectorAll('.review-card');
+                var totalCards = newCards.length;
                 newCards.forEach(function (card, i) {
+                    var reverseIndex = totalCards - 1 - i;
                     setTimeout(function () {
-                        card.classList.add('entering');
-                    }, 200 + (i * 200));
+                        card.classList.add('dropping');
+                    }, 600 + (reverseIndex * 400));
                 });
 
+                // Clean up after delivery truck exits
                 setTimeout(function () {
+                    haulTruck.classList.remove('delivering');
                     newCards.forEach(function (card) {
-                        card.classList.remove('entering');
+                        card.classList.remove('dropping');
                         card.style.opacity = '1';
                     });
                     isAnimating = false;
-                }, 1000);
+                }, 3600);
 
             }, 3400);
         }
@@ -364,10 +373,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         setTimeout(function () {
                             runHaulAnimation();
                         }, 1500);
-                        // Then repeat every 8 seconds
+                        // Then repeat every 12 seconds (7s animation + 5s reading time)
                         haulInterval = setInterval(function () {
                             runHaulAnimation();
-                        }, 8000);
+                        }, 12000);
                     }
                 } else {
                     sectionVisible = false;
